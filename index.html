@@ -1,21 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ExchangeFlow CRM — EP Management System</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-<!-- ══════════════════════════════════════
+<!-- ═══════════════════════════════════════════
      LOGIN SCREEN
-══════════════════════════════════════ -->
+═══════════════════════════════════════════ -->
 <div id="login-screen" class="login-screen">
-  <div class="login-card">
+  <div class="login-bg-orb orb1"></div>
+  <div class="login-bg-orb orb2"></div>
+  <div class="login-card animate-in">
     <div class="login-logo">
       <div class="logo-mark">EF</div>
       <div class="logo-text">
@@ -25,23 +27,33 @@
     </div>
     <h1 class="login-title">Welcome back</h1>
     <p class="login-desc">Sign in to manage your exchange participants</p>
+    <div class="login-role-tabs">
+      <button class="role-tab active" id="tab-admin" onclick="switchLoginRole('admin')">Admin</button>
+      <button class="role-tab" id="tab-user" onclick="switchLoginRole('user')">Member</button>
+    </div>
     <div class="form-group">
       <label>Username</label>
-      <input type="text" id="login-user" placeholder="admin" autocomplete="username" />
+      <input type="text" id="login-user" placeholder="Enter username" autocomplete="username" />
     </div>
     <div class="form-group">
       <label>Password</label>
       <input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password" />
     </div>
-    <div id="login-error" class="login-error hidden">Invalid credentials. Try admin / admin123</div>
-    <button class="btn-primary full-width" onclick="handleLogin()">Sign In →</button>
-    <div class="login-hint">Demo: <strong>admin</strong> / <strong>admin123</strong></div>
+    <div id="login-error" class="login-error hidden">Invalid credentials. Please try again.</div>
+    <button class="btn-primary full-width login-btn" onclick="handleLogin()">
+      <span class="btn-text">Sign In</span>
+      <span class="btn-arrow">→</span>
+    </button>
+    <div class="login-hint" id="login-hint">Admin: <strong>admin</strong> / <strong>admin123</strong></div>
+    <p style="text-align:center;margin-top:14px;font-size:12px;color:var(--text-muted)">
+      New EP? <a onclick="showSignup()">Register here</a>
+    </p>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════
+<!-- ═══════════════════════════════════════════
      MAIN APP
-══════════════════════════════════════ -->
+═══════════════════════════════════════════ -->
 <div id="app" class="app hidden">
 
   <!-- SIDEBAR -->
@@ -53,47 +65,16 @@
         <span class="logo-sub">CRM</span>
       </div>
     </div>
-
-    <nav class="sidebar-nav">
-      <div class="nav-section-label">Main</div>
-      <a class="nav-item active" data-page="dashboard" onclick="navigate('dashboard')">
-        <span class="nav-icon">◈</span> Dashboard
-      </a>
-      <a class="nav-item" data-page="ep-list" onclick="navigate('ep-list')">
-        <span class="nav-icon">◉</span> EP List
-      </a>
-      <a class="nav-item" data-page="funnel" onclick="navigate('funnel')">
-        <span class="nav-icon">◧</span> Funnel Board
-      </a>
-      <a class="nav-item" data-page="add-ep" onclick="navigate('add-ep')">
-        <span class="nav-icon">⊕</span> Add EP
-      </a>
-      <div class="nav-section-label">Explore</div>
-      <a class="nav-item" data-page="projects" onclick="navigate('projects')">
-        <span class="nav-icon">◎</span> Project Hub
-      </a>
-      <a class="nav-item" data-page="followups" onclick="navigate('followups')">
-        <span class="nav-icon">◷</span> Follow-ups
-      </a>
-      <div class="nav-section-label">Data</div>
-      <a class="nav-item" onclick="exportData()">
-        <span class="nav-icon">↑</span> Export JSON
-      </a>
-      <a class="nav-item" onclick="document.getElementById('import-file').click()">
-        <span class="nav-icon">↓</span> Import JSON
-      </a>
-      <input type="file" id="import-file" accept=".json" class="hidden" onchange="importData(event)" />
-    </nav>
-
+    <nav class="sidebar-nav" id="sidebar-nav"></nav>
     <div class="sidebar-footer">
       <div class="sidebar-user">
-        <div class="user-avatar">AD</div>
+        <div class="user-avatar" id="sidebar-avatar">AD</div>
         <div class="user-info">
-          <span class="user-name">Admin</span>
-          <span class="user-role">oGX Lead</span>
+          <span class="user-name" id="sidebar-username">Admin</span>
+          <span class="user-role" id="sidebar-role-label">Administrator</span>
         </div>
       </div>
-      <button class="btn-logout" onclick="handleLogout()">↩</button>
+      <button class="btn-logout" onclick="handleLogout()" title="Logout">↩</button>
     </div>
   </aside>
 
@@ -106,7 +87,9 @@
       <div class="logo-mark xs">EF</div>
       <span class="logo-name">ExchangeFlow</span>
     </div>
-    <div style="width:40px"></div>
+    <button class="theme-toggle-btn mobile-theme" onclick="toggleTheme()" title="Toggle theme">
+      <span id="theme-icon-mobile">☾</span>
+    </button>
   </header>
 
   <!-- SIDEBAR OVERLAY -->
@@ -115,7 +98,22 @@
   <!-- MAIN CONTENT -->
   <main class="main-content">
 
-    <!-- ── DASHBOARD PAGE ── -->
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <span class="topbar-breadcrumb" id="topbar-breadcrumb">Dashboard</span>
+      </div>
+      <div class="topbar-right">
+        <button class="theme-toggle-btn" onclick="toggleTheme()" title="Toggle theme">
+          <span id="theme-icon">☾</span>
+          <span id="theme-label">Dark</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ────────────────────────────────
+         ADMIN DASHBOARD
+    ──────────────────────────────── -->
     <div id="page-dashboard" class="page active">
       <div class="page-header">
         <div>
@@ -124,49 +122,57 @@
         </div>
         <button class="btn-primary" onclick="navigate('add-ep')">+ Add EP</button>
       </div>
-
       <div class="stats-grid" id="stats-grid"></div>
-
       <div class="dashboard-row">
-        <div class="card funnel-summary-card">
-          <div class="card-header">
-            <h3>Funnel Overview</h3>
-            <span class="card-badge">All Stages</span>
-          </div>
+        <div class="card">
+          <div class="card-header"><h3>Funnel Overview</h3><span class="card-badge">All Stages</span></div>
           <div id="funnel-bars"></div>
         </div>
         <div class="card">
-          <div class="card-header">
-            <h3>Recent Activity</h3>
-            <span class="card-badge">Latest 5</span>
-          </div>
+          <div class="card-header"><h3>Recent Activity</h3><span class="card-badge">Latest 5</span></div>
           <div id="recent-activity"></div>
         </div>
       </div>
-
       <div class="card mt-24">
-        <div class="card-header">
-          <h3>⚠ Overdue Follow-ups</h3>
-          <span class="card-badge urgent">Needs Attention</span>
-        </div>
+        <div class="card-header"><h3>⚠ Overdue Follow-ups</h3><span class="card-badge urgent">Needs Attention</span></div>
         <div id="overdue-list"></div>
       </div>
     </div>
 
-    <!-- ── EP LIST PAGE ── -->
+    <!-- ────────────────────────────────
+         USER (MEMBER) DASHBOARD
+    ──────────────────────────────── -->
+    <div id="page-user-dashboard" class="page">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">My Dashboard</h1>
+          <p class="page-sub" id="user-dash-sub">Your assigned EPs</p>
+        </div>
+      </div>
+      <div class="stats-grid" id="user-stats-grid"></div>
+      <div class="card mt-24">
+        <div class="card-header"><h3>⚠ My Overdue Follow-ups</h3><span class="card-badge urgent">Action needed</span></div>
+        <div id="user-overdue-list"></div>
+      </div>
+      <div class="card mt-24">
+        <div class="card-header"><h3>My Pipeline</h3></div>
+        <div id="user-funnel-bars"></div>
+      </div>
+    </div>
+
+    <!-- ────────────────────────────────
+         EP LIST
+    ──────────────────────────────── -->
     <div id="page-ep-list" class="page">
       <div class="page-header">
         <div>
           <h1 class="page-title">EP List</h1>
           <p class="page-sub" id="ep-count-label">All participants</p>
         </div>
-        <div class="header-actions">
-          <button class="btn-secondary" onclick="navigate('add-ep')">+ Add EP</button>
-        </div>
+        <div class="header-actions" id="ep-list-actions"></div>
       </div>
-
       <div class="filter-bar">
-        <input type="text" id="search-input" class="search-input" placeholder="Search by name, email, university…" oninput="renderEPList()" />
+        <input type="text" id="search-input" class="search-input" placeholder="Search name, email, university…" oninput="renderEPList()" />
         <select id="filter-status" class="filter-select" onchange="renderEPList()">
           <option value="">All Statuses</option>
           <option>New Lead</option><option>Contacted</option><option>Interested</option>
@@ -176,22 +182,25 @@
         <select id="filter-member" class="filter-select" onchange="renderEPList()">
           <option value="">All Members</option>
         </select>
+        <select id="filter-product" class="filter-select" onchange="renderEPList()">
+          <option value="">All Products</option>
+          <option>oGV</option><option>oGTa</option><option>oGTe</option>
+        </select>
         <select id="filter-country" class="filter-select" onchange="renderEPList()">
           <option value="">All Countries</option>
         </select>
       </div>
-
       <div class="table-wrap">
         <table class="ep-table">
           <thead>
             <tr>
               <th>Name</th>
-              <th>Email</th>
               <th>University</th>
+              <th>Product</th>
               <th>Country</th>
-              <th>Assigned To</th>
+              <th class="col-assigned">Assigned To</th>
               <th>Status</th>
-              <th>Next Follow-up</th>
+              <th>Follow-up</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -199,17 +208,19 @@
         </table>
         <div id="ep-empty" class="empty-state hidden">
           <div class="empty-icon">◉</div>
-          <p>No EPs found. Try adjusting your filters or <a onclick="navigate('add-ep')">add a new EP</a>.</p>
+          <p>No EPs found. Adjust filters or <a onclick="navigate('add-ep')">add a new EP</a>.</p>
         </div>
       </div>
     </div>
 
-    <!-- ── FUNNEL BOARD PAGE ── -->
+    <!-- ────────────────────────────────
+         FUNNEL BOARD
+    ──────────────────────────────── -->
     <div id="page-funnel" class="page">
       <div class="page-header">
         <div>
           <h1 class="page-title">Funnel Board</h1>
-          <p class="page-sub">Drag & drop or update statuses</p>
+          <p class="page-sub">Drag & drop to update pipeline stages</p>
         </div>
         <div class="funnel-legend">
           <span class="legend-dot" style="background:var(--s1)"></span>Early
@@ -220,103 +231,180 @@
       <div class="funnel-board" id="funnel-board"></div>
     </div>
 
-    <!-- ── ADD / EDIT EP PAGE ── -->
+    <!-- ────────────────────────────────
+         ADD / EDIT EP
+    ──────────────────────────────── -->
     <div id="page-add-ep" class="page">
       <div class="page-header">
         <div>
           <h1 class="page-title" id="ep-form-title">Add New EP</h1>
-          <p class="page-sub">Fill in the participant's details</p>
+          <p class="page-sub" id="ep-form-sub">Fill in participant details</p>
         </div>
+        <div id="ep-form-role-badge" class="role-badge hidden"></div>
       </div>
-
       <div class="form-card">
         <input type="hidden" id="ep-id" />
-        <div class="form-grid">
-          <div class="form-group">
-            <label>Full Name *</label>
-            <input type="text" id="ep-name" placeholder="Sarah Ahmed" />
+        <!-- Admin fields (full) -->
+        <div id="ep-form-admin" class="hidden">
+          <div class="form-section-title">Basic Information</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Full Name *</label>
+              <input type="text" id="ep-name" placeholder="Sarah Ahmed" />
+            </div>
+            <div class="form-group">
+              <label>Email *</label>
+              <input type="email" id="ep-email" placeholder="sarah@university.edu" />
+            </div>
+            <div class="form-group">
+              <label>Phone</label>
+              <input type="text" id="ep-phone" placeholder="+880 1XXX XXX XXX" />
+            </div>
+            <div class="form-group">
+              <label>University</label>
+              <input type="text" id="ep-university" placeholder="University of Dhaka" />
+            </div>
+            <div class="form-group">
+              <label>Department</label>
+              <input type="text" id="ep-department" placeholder="Computer Science" />
+            </div>
+            <div class="form-group">
+              <label>Degree</label>
+              <input type="text" id="ep-degree" placeholder="BSc Computer Science" />
+            </div>
           </div>
-          <div class="form-group">
-            <label>Email *</label>
-            <input type="email" id="ep-email" placeholder="sarah@university.edu" />
+          <div class="form-section-title" style="margin-top:8px">Program Preferences</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Preferred Country</label>
+              <select id="ep-country">
+                <option value="">Select country…</option>
+                <option>Germany</option><option>Poland</option><option>Turkey</option><option>India</option>
+                <option>Malaysia</option><option>Colombia</option><option>Brazil</option><option>Mexico</option>
+                <option>Egypt</option><option>Morocco</option><option>Indonesia</option><option>Philippines</option><option>Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Focus Product *</label>
+              <select id="ep-focus-product">
+                <option value="">Select product…</option>
+                <option>oGV</option><option>oGTa</option><option>oGTe</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Preferred Project Type</label>
+              <select id="ep-project-type">
+                <option value="">Select type…</option>
+                <option>Fingerprint (Engineering &amp; Tech)</option>
+                <option>Heartbeat (Health &amp; Public Health)</option>
+                <option>Teach (Education)</option>
+                <option>Raise (Business &amp; Management)</option>
+                <option>Impact (Social Entrepreneurship)</option>
+                <option>Sustain (Environment)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Assigned oGX Member</label>
+              <select id="ep-assigned">
+                <option value="">Unassigned</option>
+              </select>
+            </div>
           </div>
-          <div class="form-group">
-            <label>Phone</label>
-            <input type="text" id="ep-phone" placeholder="+880 1XXX XXX XXX" />
-          </div>
-          <div class="form-group">
-            <label>University</label>
-            <input type="text" id="ep-university" placeholder="University of Dhaka" />
-          </div>
-          <div class="form-group">
-            <label>Degree</label>
-            <input type="text" id="ep-degree" placeholder="BSc Computer Science" />
-          </div>
-          <div class="form-group">
-            <label>Preferred Country</label>
-            <select id="ep-country">
-              <option value="">Select country…</option>
-              <option>Germany</option><option>Poland</option><option>Turkey</option>
-              <option>India</option><option>Malaysia</option><option>Colombia</option>
-              <option>Brazil</option><option>Mexico</option><option>Egypt</option>
-              <option>Morocco</option><option>Indonesia</option><option>Philippines</option>
-              <option>Other</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Preferred Project Type</label>
-            <select id="ep-project-type">
-              <option value="">Select type…</option>
-              <option>Fingerprint (Engineering & Tech)</option>
-              <option>Heartbeat (Health & Public Health)</option>
-              <option>Teach (Education)</option>
-              <option>Raise (Business & Management)</option>
-              <option>Impact (Social Entrepreneurship)</option>
-              <option>Sustain (Environment)</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Assigned oGX Member</label>
-            <select id="ep-assigned">
-              <option value="">Unassigned</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Status</label>
-            <select id="ep-status">
-              <option>New Lead</option><option>Contacted</option><option>Interested</option>
-              <option>Session Booked</option><option>Applicant</option><option>Applied</option>
-              <option>Matched</option><option>Approved</option><option>Realized</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Last Contact Date</label>
-            <input type="date" id="ep-last-contact" />
-          </div>
-          <div class="form-group">
-            <label>Next Follow-up Date</label>
-            <input type="date" id="ep-followup" />
+          <div class="form-section-title" style="margin-top:8px">Pipeline</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Status</label>
+              <select id="ep-status">
+                <option>New Lead</option><option>Contacted</option><option>Interested</option>
+                <option>Session Booked</option><option>Applicant</option><option>Applied</option>
+                <option>Matched</option><option>Approved</option><option>Realized</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Last Contact Date</label>
+              <input type="date" id="ep-last-contact" />
+            </div>
+            <div class="form-group">
+              <label>Next Follow-up Date</label>
+              <input type="date" id="ep-followup" />
+            </div>
           </div>
         </div>
-        <div class="form-group full-col">
+
+        <!-- User fields (restricted) -->
+        <div id="ep-form-user" class="hidden">
+          <div class="user-edit-notice">
+            <span class="notice-icon">ℹ</span>
+            You can edit the fields below for your assigned EP.
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Full Name</label>
+              <input type="text" id="ep-name-u" placeholder="EP full name" />
+            </div>
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" id="ep-email-u" placeholder="ep@email.com" />
+            </div>
+            <div class="form-group">
+              <label>Phone</label>
+              <input type="text" id="ep-phone-u" placeholder="+880 1XXX XXX XXX" />
+            </div>
+            <div class="form-group">
+              <label>University</label>
+              <input type="text" id="ep-university-u" placeholder="University name" />
+            </div>
+            <div class="form-group">
+              <label>Preferred Country</label>
+              <select id="ep-country-u">
+                <option value="">Select country…</option>
+                <option>Germany</option><option>Poland</option><option>Turkey</option><option>India</option>
+                <option>Malaysia</option><option>Colombia</option><option>Brazil</option><option>Mexico</option>
+                <option>Egypt</option><option>Morocco</option><option>Indonesia</option><option>Philippines</option><option>Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Status</label>
+              <select id="ep-status-u">
+                <option>New Lead</option><option>Contacted</option><option>Interested</option>
+                <option>Session Booked</option><option>Applicant</option><option>Applied</option>
+                <option>Matched</option><option>Approved</option><option>Realized</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Last Contact Date</label>
+              <input type="date" id="ep-last-contact-u" />
+            </div>
+            <div class="form-group">
+              <label>Next Follow-up Date</label>
+              <input type="date" id="ep-followup-u" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Shared: motivation / notes -->
+        <div class="form-group" style="margin-top:4px">
           <label>Motivation / Notes</label>
           <textarea id="ep-motivation" rows="4" placeholder="Why does this EP want to go on exchange? Any notes…"></textarea>
         </div>
+
         <div class="form-actions">
-          <button class="btn-secondary" onclick="resetEPForm()">Cancel</button>
+          <button class="btn-secondary" onclick="cancelEPForm()">← Cancel</button>
           <button class="btn-primary" onclick="saveEP()">Save EP →</button>
         </div>
       </div>
     </div>
 
-    <!-- ── PROJECT HUB PAGE ── -->
+    <!-- ────────────────────────────────
+         PROJECT HUB
+    ──────────────────────────────── -->
     <div id="page-projects" class="page">
       <div class="page-header">
         <div>
           <h1 class="page-title">Project Hub</h1>
           <p class="page-sub">Country-based exchange opportunities</p>
         </div>
-        <button class="btn-primary" onclick="openProjectModal()">+ Add Project</button>
+        <button class="btn-primary" id="add-project-btn" onclick="openProjectModal()" style="display:none">+ Add Project</button>
       </div>
       <div class="filter-bar">
         <input type="text" id="project-search" class="search-input" placeholder="Search projects…" oninput="renderProjects()" />
@@ -332,7 +420,9 @@
       <div class="project-grid" id="project-grid"></div>
     </div>
 
-    <!-- ── FOLLOW-UPS PAGE ── -->
+    <!-- ────────────────────────────────
+         FOLLOW-UPS
+    ──────────────────────────────── -->
     <div id="page-followups" class="page">
       <div class="page-header">
         <div>
@@ -343,13 +433,28 @@
       <div class="followup-sections" id="followup-sections"></div>
     </div>
 
+    <!-- ────────────────────────────────
+         MEMBER ANALYTICS (Admin only)
+    ──────────────────────────────── -->
+    <div id="page-members" class="page">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Member Analytics</h1>
+          <p class="page-sub">Performance overview per oGX member</p>
+        </div>
+        <button class="btn-primary" onclick="openMembersModal()">⊕ Manage Members</button>
+      </div>
+      <div class="member-analytics-grid" id="member-analytics-grid"></div>
+    </div>
+
   </main>
 </div>
 
-<!-- ══════════════════════════════════════
+<!-- ═══════════════════════════════════════════
      EP SIGNUP PAGE (PUBLIC)
-══════════════════════════════════════ -->
+═══════════════════════════════════════════ -->
 <div id="signup-screen" class="signup-screen hidden">
+  <div class="login-bg-orb orb1"></div>
   <div class="signup-header">
     <div class="logo-mark">EF</div>
     <div class="logo-text">
@@ -357,70 +462,62 @@
       <span class="logo-sub">Exchange Program Registration</span>
     </div>
   </div>
-  <div class="signup-card">
+  <div class="signup-card animate-in">
     <h2>Apply for Exchange</h2>
-    <p class="signup-desc">Start your global journey. Fill in your details and we'll contact you within 48 hours.</p>
+    <p class="signup-desc">Start your global journey. We'll contact you within 48 hours.</p>
     <div class="form-grid">
-      <div class="form-group">
-        <label>Full Name *</label>
-        <input type="text" id="signup-name" placeholder="Your full name" />
-      </div>
-      <div class="form-group">
-        <label>Email *</label>
-        <input type="email" id="signup-email" placeholder="you@email.com" />
-      </div>
-      <div class="form-group">
-        <label>Phone</label>
-        <input type="text" id="signup-phone" placeholder="+880 1XXX XXX XXX" />
-      </div>
-      <div class="form-group">
-        <label>University</label>
-        <input type="text" id="signup-university" placeholder="Your university" />
-      </div>
-      <div class="form-group">
-        <label>Degree</label>
-        <input type="text" id="signup-degree" placeholder="e.g. BSc Engineering" />
-      </div>
+      <div class="form-group"><label>Full Name *</label><input type="text" id="signup-name" placeholder="Your full name" /></div>
+      <div class="form-group"><label>Email *</label><input type="email" id="signup-email" placeholder="you@email.com" /></div>
+      <div class="form-group"><label>Phone</label><input type="text" id="signup-phone" placeholder="+880 1XXX XXX XXX" /></div>
+      <div class="form-group"><label>University</label><input type="text" id="signup-university" placeholder="Your university" /></div>
+      <div class="form-group"><label>Department</label><input type="text" id="signup-department" placeholder="e.g. Computer Science" /></div>
+      <div class="form-group"><label>Degree</label><input type="text" id="signup-degree" placeholder="e.g. BSc Engineering" /></div>
       <div class="form-group">
         <label>Preferred Country</label>
         <select id="signup-country">
           <option value="">Select country…</option>
-          <option>Germany</option><option>Poland</option><option>Turkey</option>
-          <option>India</option><option>Malaysia</option><option>Colombia</option>
-          <option>Brazil</option><option>Mexico</option><option>Egypt</option>
-          <option>Morocco</option><option>Indonesia</option><option>Philippines</option>
-          <option>Other</option>
+          <option>Germany</option><option>Poland</option><option>Turkey</option><option>India</option>
+          <option>Malaysia</option><option>Colombia</option><option>Brazil</option><option>Mexico</option>
+          <option>Egypt</option><option>Morocco</option><option>Indonesia</option><option>Philippines</option><option>Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Focus Product *</label>
+        <select id="signup-focus-product">
+          <option value="">Select product…</option>
+          <option>oGV</option><option>oGTa</option><option>oGTe</option>
         </select>
       </div>
       <div class="form-group">
         <label>Preferred Project Type</label>
         <select id="signup-project-type">
           <option value="">Select type…</option>
-          <option>Fingerprint (Engineering & Tech)</option>
-          <option>Heartbeat (Health & Public Health)</option>
+          <option>Fingerprint (Engineering &amp; Tech)</option>
+          <option>Heartbeat (Health &amp; Public Health)</option>
           <option>Teach (Education)</option>
-          <option>Raise (Business & Management)</option>
+          <option>Raise (Business &amp; Management)</option>
           <option>Impact (Social Entrepreneurship)</option>
           <option>Sustain (Environment)</option>
         </select>
       </div>
     </div>
-    <div class="form-group">
+    <div class="form-group" style="margin-top:4px">
       <label>Why do you want to go on exchange? *</label>
-      <textarea id="signup-motivation" rows="4" placeholder="Tell us about your motivation and what you hope to gain…"></textarea>
+      <textarea id="signup-motivation" rows="4" placeholder="Tell us about your motivation…"></textarea>
     </div>
     <div id="signup-success" class="signup-success hidden">
       ✓ Application submitted! We'll contact you within 48 hours.
     </div>
-    <button class="btn-primary full-width" onclick="handleSignup()">Submit Application →</button>
-    <p class="signup-login-link">Are you an admin? <a onclick="showLogin()">Sign in here</a></p>
+    <button class="btn-primary full-width" style="margin-top:10px" onclick="handleSignup()">Submit Application →</button>
+    <p class="signup-login-link">Already have an account? <a onclick="showLogin()">Sign in here</a></p>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════
+<!-- ═══════════════════════════════════════════
      MODALS
-══════════════════════════════════════ -->
-<!-- EP Detail / Edit Modal -->
+═══════════════════════════════════════════ -->
+
+<!-- EP Detail Modal -->
 <div id="ep-modal" class="modal hidden">
   <div class="modal-overlay" onclick="closeModal('ep-modal')"></div>
   <div class="modal-box">
@@ -442,31 +539,20 @@
     </div>
     <div class="form-grid">
       <input type="hidden" id="project-id" />
-      <div class="form-group">
-        <label>Country *</label>
-        <input type="text" id="proj-country" placeholder="Germany" />
-      </div>
-      <div class="form-group">
-        <label>Project Name *</label>
-        <input type="text" id="proj-name" placeholder="Green Tech Initiative" />
-      </div>
-      <div class="form-group">
-        <label>Category</label>
+      <div class="form-group"><label>Country *</label><input type="text" id="proj-country" placeholder="Germany" /></div>
+      <div class="form-group"><label>Project Name *</label><input type="text" id="proj-name" placeholder="Green Tech Initiative" /></div>
+      <div class="form-group"><label>Category</label>
         <select id="proj-category">
           <option>Fingerprint</option><option>Heartbeat</option><option>Teach</option>
           <option>Raise</option><option>Impact</option><option>Sustain</option>
         </select>
       </div>
-      <div class="form-group">
-        <label>Status</label>
-        <select id="proj-status">
-          <option>Open</option><option>Closing Soon</option><option>Closed</option>
-        </select>
+      <div class="form-group"><label>Status</label>
+        <select id="proj-status"><option>Open</option><option>Closing Soon</option><option>Closed</option></select>
       </div>
     </div>
-    <div class="form-group">
-      <label>Description</label>
-      <textarea id="proj-desc" rows="3" placeholder="Brief description of the project (10-20 words)…"></textarea>
+    <div class="form-group"><label>Description</label>
+      <textarea id="proj-desc" rows="3" placeholder="Brief description of the project…"></textarea>
     </div>
     <div class="form-actions">
       <button class="btn-secondary" onclick="closeModal('project-modal')">Cancel</button>
@@ -475,26 +561,7 @@
   </div>
 </div>
 
-<!-- Notification Toast -->
-<div id="toast" class="toast hidden"></div>
-
-<!-- Confirm Delete -->
-<div id="confirm-modal" class="modal hidden">
-  <div class="modal-overlay" onclick="closeModal('confirm-modal')"></div>
-  <div class="modal-box sm">
-    <div class="modal-header">
-      <h3>Confirm Delete</h3>
-      <button class="modal-close" onclick="closeModal('confirm-modal')">✕</button>
-    </div>
-    <p id="confirm-text" style="margin:16px 0; color:var(--text-secondary);">Are you sure you want to delete this item?</p>
-    <div class="form-actions">
-      <button class="btn-secondary" onclick="closeModal('confirm-modal')">Cancel</button>
-      <button class="btn-danger" id="confirm-action-btn">Delete</button>
-    </div>
-  </div>
-</div>
-
-<!-- oGX Members Manager -->
+<!-- Manage Members Modal -->
 <div id="members-modal" class="modal hidden">
   <div class="modal-overlay" onclick="closeModal('members-modal')"></div>
   <div class="modal-box">
@@ -503,13 +570,50 @@
       <button class="modal-close" onclick="closeModal('members-modal')">✕</button>
     </div>
     <div class="members-list" id="members-list"></div>
-    <div class="add-member-row">
-      <input type="text" id="new-member-name" placeholder="Member name…" />
-      <input type="email" id="new-member-email" placeholder="member@email.com" />
-      <button class="btn-primary" onclick="addMember()">Add</button>
+    <div class="add-member-section">
+      <div class="form-section-title" style="margin-bottom:10px">Add New Member</div>
+      <div class="add-member-row">
+        <input type="text" id="new-member-name" placeholder="Full name…" />
+        <input type="email" id="new-member-email" placeholder="email@aiesec.org" />
+        <input type="text" id="new-member-username" placeholder="username" />
+        <input type="password" id="new-member-password" placeholder="password" />
+        <button class="btn-primary" onclick="addMember()">Add</button>
+      </div>
     </div>
   </div>
 </div>
+
+<!-- CSV Import Result Modal -->
+<div id="csv-result-modal" class="modal hidden">
+  <div class="modal-overlay" onclick="closeModal('csv-result-modal')"></div>
+  <div class="modal-box sm">
+    <div class="modal-header">
+      <h3>CSV Import Results</h3>
+      <button class="modal-close" onclick="closeModal('csv-result-modal')">✕</button>
+    </div>
+    <div id="csv-result-body"></div>
+    <div class="form-actions"><button class="btn-primary" onclick="closeModal('csv-result-modal')">Done</button></div>
+  </div>
+</div>
+
+<!-- Confirm Delete Modal -->
+<div id="confirm-modal" class="modal hidden">
+  <div class="modal-overlay" onclick="closeModal('confirm-modal')"></div>
+  <div class="modal-box sm">
+    <div class="modal-header">
+      <h3>Confirm Delete</h3>
+      <button class="modal-close" onclick="closeModal('confirm-modal')">✕</button>
+    </div>
+    <p id="confirm-text" style="margin:16px 0;color:var(--text-secondary)">Are you sure?</p>
+    <div class="form-actions">
+      <button class="btn-secondary" onclick="closeModal('confirm-modal')">Cancel</button>
+      <button class="btn-danger" id="confirm-action-btn">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Notification -->
+<div id="toast" class="toast hidden"></div>
 
 <script src="script.js"></script>
 </body>

@@ -1062,24 +1062,30 @@ function openEPModal(id) {
       <button class="btn-primary" onclick="editEP('${ep.id}')">✏ Edit</button>
       <button class="btn-secondary" onclick="moveStatusForward('${ep.id}')">→ Next Stage</button>
       <button class="btn-secondary" onclick="moveStatusBack('${ep.id}')">← Prev Stage</button>
-      ${ep.email?`<a class="btn-secondary" style="text-decoration:none" href="${buildMailto(ep,m)}">✉ Email EP</a>`:''}
+      ${ep.email?`<a class="btn-secondary" style="text-decoration:none" href="${buildMailto(ep,m)}" target="_blank" >✉ Email EP</a>`:''}
       ${isAdmin()?`<button class="btn-icon danger" onclick="confirmDelete('ep','${ep.id}')">Delete</button>`:''}
     </div>`;
   document.getElementById('ep-modal').classList.remove('hidden');
 }
 function det(label, val) { return `<div class="ep-detail-row"><label>${label}</label><span>${val||'—'}</span></div>`; }
 function buildMailto(ep, member) {
+  const to      = encodeURIComponent(member?.email || ep.email || '');
   const subject = encodeURIComponent(`Exchange Update — ${ep.name}`);
-  const body = encodeURIComponent([
-    `Hi ${member?.name||'Team'},`,'',
-    'EP Assignment Details:','',
-    `Name:          ${ep.name}`,`Email:         ${ep.email}`,`Phone:         ${ep.phone||'N/A'}`,
-    `University:    ${ep.university||'N/A'}`,`Department:    ${ep.department||'N/A'}`,
-    `Focus Product: ${ep.focusProduct||'N/A'}`,`Country:       ${ep.country||'N/A'}`,
-    `Status:        ${ep.status}`,`Follow-up:     ${ep.followup||'N/A'}`,
-    '','Please contact within 24 hours.','','ExchangeFlow CRM'
+  const body    = encodeURIComponent([
+    `Hi ${member?.name || 'Team'},`, '',
+    'EP Assignment Details:', '',
+    `Name:          ${ep.name}`,
+    `Email:         ${ep.email}`,
+    `Phone:         ${ep.phone || 'N/A'}`,
+    `University:    ${ep.university || 'N/A'}`,
+    `Department:    ${ep.department || 'N/A'}`,
+    `Focus Product: ${ep.focusProduct || 'N/A'}`,
+    `Country:       ${ep.country || 'N/A'}`,
+    `Status:        ${ep.status}`,
+    `Follow-up:     ${ep.followup || 'N/A'}`,
+    '', 'Please contact within 24 hours.', '', 'AIESEC in Bangladesh'
   ].join('\n'));
-  return `mailto:${member?.email||ep.email||''}?subject=${subject}&body=${body}`;
+  return `https://mail.google.com/mail/?view=cm&to=${to}&su=${subject}&body=${body}`;
 }
 
 // ─── STATUS (BIDIRECTIONAL) ───────────────────────
@@ -1212,8 +1218,10 @@ function followupSection(type,title,list) {
 
 // ─── NOTIFICATIONS ────────────────────────────────
 function triggerAssignNotification(member, ep) {
-  if (member.email) { const a=document.createElement('a');a.href=buildMailto(ep,member);a.click(); }
-  showToast(`📧 ${member.name} assigned to ${ep.name}`,'success');
+  if (member.email) {
+    window.open(buildMailto(ep, member), '_blank');
+  }
+  showToast(`📧 ${member.name} assigned to ${ep.name}`, 'success');
 }
 
 // ─── EP SIGNUP ────────────────────────────────────

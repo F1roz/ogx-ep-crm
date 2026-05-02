@@ -620,6 +620,8 @@ function renderUserDashboard() {
   renderStatsGrid('user-stats-grid', [
     { label:'Assigned EPs', value:my.length, sub:'your portfolio',  color:'var(--accent)' },
     { label:'Active',       value:active,    sub:'in progress',     color:'var(--yellow)' },
+    { label:'Applied',  value:eps.filter(e=>e.status==='Applied').length,  sub:'awaiting match',  color:'var(--s6)' },
+    { label:'Approved', value:eps.filter(e=>e.status==='Approved').length, sub:'ready to go',     color:'var(--s8)' },
     { label:'Realized',     value:realized,  sub:`${conv}% conv.`,  color:'var(--green)'  },
     { label:'Overdue',      value:overdue,   sub:'need follow-up',  color:'var(--red)'    },
   ]);

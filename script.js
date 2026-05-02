@@ -11,7 +11,7 @@ const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsI
 const db = supabase.createClient(SUPA_URL, SUPA_KEY);
 
 // ─── CONSTANTS ────────────────────────────────────
-const ADMIN_CREDS = { username:'admin', password:'admin123', role:'admin', name:'Admin' };
+const ADMIN_CREDS = { username:'firoz', password:'firoz25.26', role:'MCVP', name:'Firoz Fahim' };
 const STATUSES = ['New Lead','Contacted','Interested','Session Booked','Applicant','Applied','Matched','Approved','Realized'];
 const STATUS_COLORS = {
   'New Lead':'#6b7cff','Contacted':'#a78bfa','Interested':'#f472b6',

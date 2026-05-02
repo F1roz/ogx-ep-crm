@@ -272,8 +272,8 @@ function switchLoginRole(role) {
   document.getElementById('tab-admin').classList.toggle('active', role === 'admin');
   document.getElementById('tab-user').classList.toggle('active',  role === 'user');
   document.getElementById('login-hint').innerHTML = role === 'admin'
-    ? 'Admin: <strong>admin</strong> / <strong>admin123</strong>'
-    : 'e.g. <strong>rafi</strong> / <strong>rafi123</strong>';
+    ? 'Admin: <strong>---</strong> / <strong>---</strong>'
+    : 'e.g. <strong>---</strong> / <strong>---</strong>';
 }
 
 async function handleLogin() {

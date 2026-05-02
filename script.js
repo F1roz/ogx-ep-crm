@@ -216,6 +216,7 @@ function applyRoleVisibility() {
         <button class="btn-secondary" onclick="exportCSV()">↑ CSV</button>
         <button class="btn-secondary" onclick="document.getElementById('import-csv-file').click()">↓ Import CSV</button>
         <input type="file" id="import-csv-file" accept=".csv" class="hidden" onchange="importCSV(event)" />`;
+        <button class="btn-secondary" style="color:var(--red);border-color:rgba(255,90,90,0.3)" onclick="deleteAllEPs()">✕ Delete All EPs</button>
     } else {
       actEl.innerHTML = '';
     }
@@ -1332,5 +1333,19 @@ function esc(str) {
     document.getElementById('login-screen').classList.remove('hidden');
     document.getElementById('app').classList.add('hidden');
     document.getElementById('signup-screen').classList.add('hidden');
+  }
+  function deleteAllEPs() {
+    if (!isAdmin()) return;
+    if (!eps.length) { showToast('No EPs to delete.', 'warning'); return; }
+    document.getElementById('confirm-text').textContent = `Delete ALL ${eps.length} EPs permanently? This cannot be undone.`;
+    document.getElementById('confirm-action-btn').onclick = () => {
+      eps = [];
+      save();
+      populateCountryFilters();
+      closeModal('confirm-modal');
+      renderEPList();
+      showToast('All EPs deleted.', 'success');
+    };
+    document.getElementById('confirm-modal').classList.remove('hidden');
   }
 })();

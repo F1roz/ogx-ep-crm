@@ -702,7 +702,7 @@ function renderMemberAnalytics() {
       <div class="member-stat-row"><span class="member-stat-label">Total Assigned</span><span class="member-stat-value highlight">${myEPs.length}</span></div>
       <div class="member-stat-row"><span class="member-stat-label">Contacted</span><span class="member-stat-value">${contacted}</span></div>
       <div class="member-stat-row"><span class="member-stat-label">Followed-up</span><span class="member-stat-value">${followed}</span></div>
-      <div class="member-stat-row"><span class="member-stat-label">Realized</span><span class="member-stat-value" style="color:var(--green)">${converted}</span></div>
+      <div class="member-stat-row"><span class="member-stat-label">Approved</span><span class="member-stat-value" style="color:var(--green)">${converted}</span></div>
       <div class="member-stat-row"><span class="member-stat-label">Remaining</span><span class="member-stat-value">${remaining}</span></div>
       <div class="member-conversion-bar">
         <div class="member-conversion-label">Conversion Rate — ${conv}%</div>

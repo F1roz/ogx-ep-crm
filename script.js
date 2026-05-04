@@ -1388,6 +1388,103 @@ function dateClass(d){if(!d)return'date-normal';const t=new Date();t.setHours(0,
 function isOverdue(d){if(!d)return false;const t=new Date();t.setHours(0,0,0,0);return new Date(d)<t;}
 function isToday(d){return d&&new Date(d).toDateString()===new Date().toDateString();}
 
+// ─── CSV IMPORT MEMBERS ───────────────────────────
+async function importMembersCSV(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = async e => {
+    const lines = e.target.result.split(/\r?\n/).filter(l => l.trim());
+    if (lines.length < 2) { showToast('CSV file is empty.', 'error'); return; }
+
+    const headerRow = parseCSVRow(lines[0]).map(h => h.trim().toLowerCase().replace(/[^a-z ]/g, ''));
+    const get = (cols, aliases) => {
+      const idx = headerRow.findIndex(c => aliases.includes(c));
+      return idx > -1 ? (cols[idx] || '').trim().replace(/^"|"$/g, '') : '';
+    };
+
+    let added = 0, dupes = 0, errors = 0;
+    const resultItems = [];
+    const toInsert = [];
+
+    for (let i = 1; i < lines.length; i++) {
+      const cols = parseCSVRow(lines[i]);
+      const name     = get(cols, ['name', 'full name']);
+      const username = get(cols, ['username', 'user', 'user name']);
+      const password = get(cols, ['password', 'pass']);
+      const email    = get(cols, ['email', 'email address']);
+
+      if (!name && !username) continue;
+
+      if (!username) {
+        errors++;
+        resultItems.push({ type: 'error', msg: `Missing username: ${name}` });
+        continue;
+      }
+      if (!password) {
+        errors++;
+        resultItems.push({ type: 'error', msg: `Missing password: ${name}` });
+        continue;
+      }
+      if (members.find(m => m.username === username)) {
+        dupes++;
+        resultItems.push({ type: 'warning', msg: `Duplicate username: ${username}` });
+        continue;
+      }
+
+      const m = {
+        id:          genId(),
+        name:        name || username,
+        email:       email || '',
+        username,
+        password,
+        designation: get(cols, ['designation', 'role', 'title', 'position']),
+        phone:       get(cols, ['phone', 'phone number', 'mobile']),
+        university:  get(cols, ['university', 'school', 'college']),
+        tl:          get(cols, ['tl', 'vp', 'tl vp', 'team lead', 'supervisor']),
+        role:        'user',
+      };
+
+      toInsert.push(m);
+      added++;
+      resultItems.push({ type: 'success', msg: `Added: ${name} (@${username})` });
+    }
+
+    if (toInsert.length) {
+      try {
+        showLoading(true);
+        for (const m of toInsert) {
+          await saveMemberToDB(m);
+          members.push(m);
+        }
+        showLoading(false);
+        cacheAll();
+        populateMemberDropdowns();
+        renderMemberAnalytics();
+        renderMembersList();
+      } catch (err) {
+        showLoading(false);
+        showToast('Import partially failed: ' + err.message, 'error');
+      }
+    }
+
+    // Show result modal
+    const body = document.getElementById('csv-result-body');
+    body.innerHTML = `
+      <div style="display:flex;gap:24px;margin-bottom:16px;flex-wrap:wrap">
+        <div style="text-align:center"><div style="font-size:28px;font-family:'Syne',sans-serif;font-weight:700;color:var(--green)">${added}</div><div style="font-size:11px;color:var(--text-muted)">Added</div></div>
+        <div style="text-align:center"><div style="font-size:28px;font-family:'Syne',sans-serif;font-weight:700;color:var(--yellow)">${dupes}</div><div style="font-size:11px;color:var(--text-muted)">Duplicates</div></div>
+        <div style="text-align:center"><div style="font-size:28px;font-family:'Syne',sans-serif;font-weight:700;color:var(--red)">${errors}</div><div style="font-size:11px;color:var(--text-muted)">Errors</div></div>
+      </div>
+      <div style="max-height:200px;overflow-y:auto">
+        ${resultItems.slice(0, 25).map(r => `<div class="csv-result-item ${r.type}">${r.type === 'success' ? '✓' : r.type === 'warning' ? '⚠' : '✕'} ${esc(r.msg)}</div>`).join('')}
+        ${resultItems.length > 25 ? `<div style="font-size:12px;color:var(--text-muted);padding:6px">…and ${resultItems.length - 25} more</div>` : ''}
+      </div>`;
+    document.getElementById('csv-result-modal').classList.remove('hidden');
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
 // ─── INIT ─────────────────────────────────────────
 (function init(){
   initTheme();

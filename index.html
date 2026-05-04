@@ -484,7 +484,12 @@
         <div class="form-group"><label>University</label><input type="text" id="new-member-university" placeholder="University name" /></div>
         <div class="form-group"><label>Report To</label><input type="text" id="new-member-tl" placeholder="Team Lead or VP name" /></div>
       </div>
-      <button class="btn-primary" onclick="addMember()" style="margin-top:4px">Add Member</button>
+      <!-- <button class="btn-primary" onclick="addMember()" style="margin-top:4px">Add Member</button> -->
+      <div style="display:flex;gap:8px;align-items:center;margin-top:4px;flex-wrap:wrap">
+        <button class="btn-primary" onclick="addMember()">Add Member</button>
+        <button class="btn-secondary" onclick="document.getElementById('import-members-csv').click()">↓ Import CSV</button>
+        <input type="file" id="import-members-csv" accept=".csv" class="hidden" onchange="importMembersCSV(event)" />
+      </div>
     </div>
   </div>
 </div>

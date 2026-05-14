@@ -14,12 +14,12 @@ const db = supabase.createClient(SUPA_URL, SUPA_KEY);
 const ADMIN_CREDS = { username:'firoz', password:'firoz25.26', role:'MCVP', name:'Firoz Fahim' };
 const STATUSES = ['New Lead','Contacted','Interested','Not Interested','Session Booked','Later','Applicant','Applied','Matched','Approved','Realized'];
 const STATUS_COLORS = {
-  'New Lead':'#6b7cff','Contacted':'#a78bfa','Interested':'#f472b6', 'Not Interested':'#FF0000',
+  'New Lead':'#6b7cff','Contacted':'#a78bfa','Interested':'#f472b6', 'Not Interest':'#FF0000',
   'Session Booked':'#fb923c','Later':'#98FB98','Applicant':'#fbbf24','Applied':'#34d399',
   'Matched':'#22d3ee','Approved':'#4f7cff','Realized':'#22d3a0'
 };
 const STATUS_CSS = {
-  'New Lead':'status-new-lead','Contacted':'status-contacted','Interested':'status-interested','Not Interested': 'status-not-interest',
+  'New Lead':'status-new-lead','Contacted':'status-contacted','Interested':'status-interested','Not Interest': 'status-not-interest',
   'Session Booked':'status-session-booked','Later':'status-later','Applicant':'status-applicant','Applied':'status-applied',
   'Matched':'status-matched','Approved':'status-approved','Realized':'status-realized'
 };

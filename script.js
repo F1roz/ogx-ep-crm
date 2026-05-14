@@ -1073,20 +1073,20 @@ function buildMailto(ep, member) {
   const subject = encodeURIComponent(`Exchange Update — ${ep.name}`);
   const body    = encodeURIComponent([
     // `Hi ${member?.name || 'Team'},`, '',
-    `Hi ${ep.name},`,
+    `Hi ${ep.name},`, '',
 
     'Exchange Participant Details:', '',
     `Name:          ${ep.name}`,
     `Email:         ${ep.email}`,
     `Phone:         ${ep.phone || 'N/A'}`,
-    `University:    ${ep.university || 'N/A'}`,
+    `University:    ${ep.university || 'N/A'}`, '',
 
-    `Your login credentials for the AIESEC platform are as follows:`,
+    `Your login credentials for the AIESEC platform are as follows:`, '',
 
     `Website: https://www.aiesec.org`,
-    `Password: 1234@Aiesec`,
-    
-    `Start your global experience today—reach out to AIESEC in Bangladesh to explore available exchange opportunities`,
+    `Password: 1234@Aiesec`, '',
+
+    `Start your global experience today—reach out to AIESEC in Bangladesh to explore available exchange opportunities`, '',
     // `Department:    ${ep.department || 'N/A'}`,
     // `Focus Product: ${ep.focusProduct || 'N/A'}`,
     // `Country:       ${ep.country || 'N/A'}`,

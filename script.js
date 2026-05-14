@@ -12,10 +12,10 @@ const db = supabase.createClient(SUPA_URL, SUPA_KEY);
 
 // ─── CONSTANTS ────────────────────────────────────
 const ADMIN_CREDS = { username:'firoz', password:'firoz25.26', role:'MCVP', name:'Firoz Fahim' };
-const STATUSES = ['New Lead','Contacted','Interested','Session Booked','Applicant','Applied','Matched','Approved','Realized'];
+const STATUSES = ['New Lead','Contacted','Interested','Not Interested','Session Booked','Later','Applicant','Applied','Matched','Approved','Realized'];
 const STATUS_COLORS = {
-  'New Lead':'#6b7cff','Contacted':'#a78bfa','Interested':'#f472b6',
-  'Session Booked':'#fb923c','Applicant':'#fbbf24','Applied':'#34d399',
+  'New Lead':'#6b7cff','Contacted':'#a78bfa','Interested':'#f472b6', 'Not Interested':'#FF0000',
+  'Session Booked':'#fb923c','Not Interested':'#98FB98','Applicant':'#fbbf24','Applied':'#34d399',
   'Matched':'#22d3ee','Approved':'#4f7cff','Realized':'#22d3a0'
 };
 const STATUS_CSS = {

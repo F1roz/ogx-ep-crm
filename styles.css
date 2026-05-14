@@ -378,7 +378,7 @@ a:hover { color:var(--accent-light); }
 .status-new-lead      { background:rgba(107,124,255,0.13); color:#8b9fff; border:1px solid rgba(107,124,255,0.25); }
 .status-contacted     { background:rgba(167,139,250,0.13); color:#b89efc; border:1px solid rgba(167,139,250,0.25); }
 .status-interested    { background:rgba(244,114,182,0.13); color:#f48bc8; border:1px solid rgba(244,114,182,0.25); }
-.status-not-interest{ background:rgba(244,114,182,0.13); color:#ef0c32; border:1px solid rgba(244,114,182,0.25); }
+.status-not-interested{ background:rgba(244,114,182,0.13); color:#ef0c32; border:1px solid rgba(244,114,182,0.25); }
 .status-session-booked{ background:rgba(251,146,60,0.13);  color:#fca97a; border:1px solid rgba(251,146,60,0.25);  }
 .status-later        { background:rgba(251,146,60,0.13);  color:#a7fc7a; border:1px solid rgba(251,146,60,0.25);  }
 .status-applicant     { background:rgba(251,191,36,0.13);  color:#fcd053; border:1px solid rgba(251,191,36,0.25);  }
@@ -390,7 +390,7 @@ a:hover { color:var(--accent-light); }
 [data-theme="light"] .status-new-lead      { color:#3d50d8; }
 [data-theme="light"] .status-contacted     { color:#6d3fcf; }
 [data-theme="light"] .status-interested    { color:#ba1163; }
-[data-theme="light"] .status-not-interest{ color:#ef0c32; }
+[data-theme="light"] .status-not-interested{ color:#ef0c32; }
 [data-theme="light"] .status-session-booked{ color:#a64000; }
 [data-theme="light"] .status-later         { color:#fc8b7a; }
 [data-theme="light"] .status-applicant     { color:#7a5800; }

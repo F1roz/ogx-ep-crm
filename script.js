@@ -37,6 +37,7 @@ let currentUser  = null;
 let draggedEPId  = null;
 let currentPage  = 'dashboard';
 let prevPage     = 'dashboard';
+let sortNameAsc = null; // null = unsorted, true = A→Z, false = Z→A
 let loginRole    = 'admin';
 let _pendingEditEP = null;
 let _dbOnline    = false;
@@ -853,6 +854,18 @@ async function deleteMember(id) {
 }
 
 // ─── EP LIST ──────────────────────────────────────
+function toggleNameSort() {
+  if (sortNameAsc === null || sortNameAsc === false) {
+    sortNameAsc = true;
+  } else {
+    sortNameAsc = false;
+  }
+  // Update button label
+  const btn = document.getElementById('sort-name-btn');
+  if (btn) btn.textContent = sortNameAsc ? 'A→Z' : 'Z→A';
+  renderEPList();
+}
+
 function renderEPList() {
   const query    = (document.getElementById('search-input')?.value||'').toLowerCase();
   const status   = document.getElementById('filter-status')?.value||'';
@@ -868,6 +881,12 @@ function renderEPList() {
     if (query && !`${e.name} ${e.email} ${e.university} ${e.country} ${e.focusProduct} ${e.department}`.toLowerCase().includes(query)) return false;
     return true;
   });
+  // ADD THIS BLOCK RIGHT HERE
+  if (sortNameAsc === true) {
+  filtered.sort((a, b) => a.name.localeCompare(b.name));
+  } else if (sortNameAsc === false) {
+  filtered.sort((a, b) => b.name.localeCompare(a.name));
+  }
 
   const countEl = document.getElementById('ep-count-label');
   if (countEl) countEl.textContent = `${filtered.length} participant${filtered.length!==1?'s':''}`;

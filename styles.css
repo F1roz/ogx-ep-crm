@@ -391,7 +391,7 @@ a:hover { color:var(--accent-light); }
 [data-theme="light"] .status-new-lead      { color:#3d50d8; }
 [data-theme="light"] .status-sign-up       { color:#037EF3; }
 [data-theme="light"] .status-contacted     { color:#6d3fcf; }
-[data-theme="light"] .status-interested    { color:#ba1163; }
+[data-theme="light"] .status-interested    { color:#11ba7c; }
 [data-theme="light"] .status-not-interested{ color:#ef0c32; }
 [data-theme="light"] .status-session-booked{ color:#a64000; }
 [data-theme="light"] .status-later         { color:#fc8b7a; }

@@ -1095,11 +1095,11 @@ function buildMailto(ep, member) {
     `Hi ${member?.name || 'Team'},`, '',
     // `Hi ${ep.name},`, '',
 
-    // 'Exchange Participant Details:', '',
-    // `Name:          ${ep.name}`,
-    // `Email:         ${ep.email}`,
-    // `Phone:         ${ep.phone || 'N/A'}`,
-    // `University:    ${ep.university || 'N/A'}`, '',
+    'Exchange Participant Details:', '',
+    `Name:          ${ep.name}`,
+    `Email:         ${ep.email}`,
+    `Phone:         ${ep.phone || 'N/A'}`,
+    `University:    ${ep.university || 'N/A'}`, '',
 
     // `Your login credentials for the AIESEC platform are as follows:`, '',
 
